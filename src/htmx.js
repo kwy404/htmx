@@ -1813,10 +1813,11 @@ var htmx = (() => {
         __addInputValues(elt, included, formData, isGet) {
             let tag = elt.tagName;
             let inputs = [];
-            if (tag === 'BUTTON' || tag.includes('-')) {
+            let buttons = 'button,input[type=submit],input[type=button],input[type=reset],input[type=image]';
+            if (elt.matches(buttons) || tag.includes('-')) {
                 inputs = [elt]; // send own value only, never collect children
             } else if (['INPUT', 'SELECT', 'TEXTAREA', 'FIELDSET'].includes(tag) || (!isGet && elt !== document.body)) {
-                inputs = this.__queryEltAndDescendants(elt, '[name]:not(button)');
+                inputs = this.__queryEltAndDescendants(elt, `[name]:not(${buttons})`);
             }
             // GET on non-form-control containers sends nothing; POST on body sends nothing; use hx-include for explicit inclusion
 

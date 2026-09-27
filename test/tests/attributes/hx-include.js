@@ -42,6 +42,14 @@ describe('hx-include attribute', function() {
         assert.equal(params.get('btn'), null);
     })
 
+    it('submit, button and reset inputs inside hx-include container are not sent', async function () {
+        mockResponse('GET', '/include', "OK")
+        createProcessedHTML('<div id="container"><input name="i1" value="yes"><input type="submit" name="s" value="no"><input type="button" name="b" value="no"><input type="reset" name="r" value="no"></div><button id="trigger" hx-get="/include" hx-include="#container">Go</button>')
+        find('#trigger').click()
+        await forRequest()
+        new URL(fetchMock.calls[0].url, location.href).searchParams.toString().should.equal('i1=yes');
+    })
+
     it('custom element with checked=true via hx-include sends value', async function () {
         mockResponse('GET', '/include', "OK")
         createProcessedHTML('<div id="container"></div><button id="btn" hx-get="/include" hx-include="#container">Go</button>')
